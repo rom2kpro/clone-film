@@ -224,8 +224,8 @@ a{
     position: relative;
 }
 .imgContent{
-    height: 510px;
-    width: 340px;
+    height: 80vh;
+    width: 54vh;
 }
 .imgContent > img {
     height: auto;
@@ -237,7 +237,7 @@ a{
     display: flex;
     flex-direction: column;
     max-width: 70%;
-    height: 510px;
+    height: 80vh;
 }
 .contentTitle > h1 {
     font-family: 'Nunito', sans-serif;
@@ -358,14 +358,18 @@ a{
         padding-top: 20px;
     }
     #contentFilm{       
-        height: 110vh;
+        height: 130vh;
     }
-    .imgContent {
-        margin-top: 20%;
-    }
+    /* .imgContent {
+        width: 30%;
+        height: auto;
+    } */
     .imgContent{
         display: flex;
         justify-content: center;
+        margin-top: 20vh;
+        /* height: auto; */
+        /* width: 60v; */
     }
     .contentTitle > h1 {
         padding: 0;
@@ -454,11 +458,14 @@ a{
         visibility: visible;
     }
     .imgContent{
+        /* margin-top: vh;   */
+        height: auto;
+        width: 40vw;
         /* display: flex;
         justify-content: center; */
-        margin-top: 20vh;
-        height: fit-content;
-        width: 50%;
+        /* margin-top: 20vh;
+        height: auto;
+        width: 30%; */
     }
     .footer{
         display: flex;
