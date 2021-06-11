@@ -1,1 +1,178 @@
-Hello World
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clone Film</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <nav class="container">
+        <a href="/index.html"><img src="https://www.fullphim.net/static/5fe2d564b3fa64a886a11cee/5fe2d564b3fa64a99ca11d1b_Full-phim-logo.png" alt=""></a>
+        <div class="w-icon-nav-menu" onclick="sidebar()">☰</div>
+        <div class="close" onclick="sidebarClose()">&times;</div>
+        <ul>
+            <li>
+                <a href="/index.html">Phim mới</a>
+            </li>
+            <li>
+                <a href="/index.html?the-loai=phimbo">Phim bộ</a>
+            </li>
+            <li>
+                <a href="/index.html?the-loai=phimle">Phim lẻ</a>
+            </li>
+            <li>
+                <a href="/index.html?the-loai=phimhoathinh">Phim hoạt hình</a>
+            </li>
+            <li>
+                <a href="/index.html?the-loai=phimchieurap">Phim chiếu rạp</a>
+            </li>
+        </ul>
+    </nav>
+    <script data-ad-client="ca-pub-4790495407778469" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+    <div class="container content" style="background-color:#081b27;">
+        <!-- Search -->
+        <div class="search">
+            <input id="search" type="text" placeholder="Tim Phim"><input type="button" value="Search" onclick="Search()">
+        </div>
+        <div id="film">
+            
+        </div>
+        <div class="redirect">
+            <button onclick="back()"><img src="back.svg" alt=""> Back</button>
+            <button onclick="next()">Next <img src="next.svg" alt=""></button>
+        </div>
+    </div>
+    <footer class="container footer">
+        <div class="column-footer">
+            <a href="">Liên hệ</a>
+            <a href="">Giới thiệu</a>
+            <a href="">Bản Quyền</a>
+        </div>
+        <div class="column-footer">
+            <a href="">Liên hệ</a>
+            <a href="">Giới thiệu</a>
+            <a href="">Bản Quyền</a>
+        </div>
+        <div class="column-footer">
+            <a href="">Liên hệ</a>
+            <a href="">Giới thiệu</a>
+            <a href="">Bản Quyền</a>
+        </div>
+        <div class="copyright">
+            <div>Copyright © 2021 Fullphim.net. All Rights reserved.</div>
+        </div>  
+    </footer>
+    
+    <script>
+        var page = 1;
+        var pageSize = 20;
+        var filmShow = [];
+        var search = "";
+        const params = (new URL(location)).searchParams;
+        var theLoai = params.get("the-loai") || "phimle";
+        var films = fetch(`./${theLoai}.json`)
+                        .then(results => results.json())
+
+        
+        document.addEventListener("DOMContentLoaded", function(event) {
+            getFilm();
+            createActiveLi();
+        });
+
+        function createActiveLi() {
+            var liActive = [...document.querySelectorAll("li")].find((li) =>li.querySelector("a").href.includes(theLoai));
+            liActive.classList.add("active");
+        }
+
+        function getFilm(){
+            document.getElementById("film").innerHTML = "";
+            if(search == ""){ 
+                films
+                .then(films => {
+                    filmShow = films.slice((page-1) * pageSize,pageSize *page);
+                    for(let i = 0; i <= filmShow.length; i++){
+                        createElementFilm(filmShow[i])
+                    }
+                })
+            }else{
+                page = 1;
+                films
+                .then(films => {
+                    filmShow =  films.filter(({title}) => title.toLowerCase().includes(search))
+                    for(let i = 0; i <= filmShow.length; i++){
+                        createElementFilm(filmShow[i])
+                    }
+                    // console.log(filmShow);
+                })
+            }
+        }        
+        function createElementFilm(film) {
+
+            var div = document.createElement("div");
+            div.classList.add("filmElement");
+
+            var img = document.createElement("img");
+            img.src = film.imageUrl;
+            img.classList.add("imageFilm");
+
+            var title = document.createElement("a");
+            title.href = `/film.html?the-loai=${theLoai}&urlFilm=${film.url}`
+            var divTitle = document.createElement("div");
+            divTitle.innerHTML = film.title;
+            divTitle.classList.add("title");
+            title.appendChild(divTitle);
+
+            var category = document.createElement("div");
+            category.classList.add("category");
+            var imgCategory = document.createElement("img");
+            imgCategory.src = "./category.svg"
+            imgCategory.classList.add("imgCategory");
+            var titleCategory = document.createElement("a");
+            titleCategory.href = "#";
+            titleCategory.innerHTML = film.category;
+            category.appendChild(imgCategory);
+            category.appendChild(titleCategory)
+    
+            div.appendChild(img);
+            div.appendChild(title);
+            div.appendChild(category);
+            document.getElementById("film").appendChild(div); 
+        }
+        function next() {
+            page++;
+            getFilm()
+        }
+        function back() {
+            page--;
+            getFilm()
+        }
+        function sidebar() {
+            document.querySelector("nav ul").style.display = "block";
+            document.querySelector(".close").style['visibility'] = "visible";
+        }
+        function sidebarClose() {
+            document.querySelector("nav ul").style.display = "none";
+            document.querySelector(".close").style['visibility'] = "hidden";
+        }   
+        window.onresize = function() {
+            if(window.innerWidth > 780){
+                document.querySelector("nav ul").style.display = "flex";
+                document.querySelector(".close").style['visibility'] = "hidden";
+            }else{
+                if(document.querySelector(".close").style['visibility'].includes("visible")){
+                    document.querySelector("nav ul").style.display = "block";
+                }else{
+                    document.querySelector("nav ul").style.display = "none";
+                    document.querySelector(".close").style['visibility'] = "hidden";
+                }
+            }
+        }
+        function Search() {
+            search = document.getElementById("search").value;
+            getFilm();
+        }
+    </script>
+</body>
+</html> 

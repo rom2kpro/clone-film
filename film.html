@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clone Film</title>
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body style="background-color:#081b27;">
+    <nav class="container">
+        <a href="/index.html"><img src="https://www.fullphim.net/static/5fe2d564b3fa64a886a11cee/5fe2d564b3fa64a99ca11d1b_Full-phim-logo.png" alt=""></a>
+        <div class="w-icon-nav-menu" onclick="sidebar()">☰</div>
+        <div class="close" onclick="sidebarClose()">&times;</div>
+        <ul>
+            <li>
+                <a href="/index.html">Phim mới</a>
+            </li>
+            <li>
+                <a href="/index.html?the-loai=phimbo">Phim bộ</a>
+            </li>
+            <li>
+                <a href="/index.html?the-loai=phimle">Phim lẻ</a>
+            </li>
+            <li>
+                <a href="/index.html?the-loai=phimhoathinh">Phim hoạt hình</a>
+            </li>
+            <li>
+                <a href="/index.html?the-loai=phimchieurap">Phim chiếu rạp</a>
+            </li>
+        </ul>
+    </nav>
+    <!-- <div class="container" > -->
+        <!-- Search -->
+        <!-- <div class="search">
+            <input type="text" value="Tim Phim"><input type="button" value="Search">
+        </div> -->
+        
+    <!-- </div> -->
+    <div id="contentFilm">
+        <div class="overlay"></div>
+        <div class="container" id="content">
+        </div>
+    </div>
+    <!-- <iframe controls controlsList="nodownload" src="https://scontent-xsp1-2.xx.fbcdn.net/v/t66.36240-6/10000000_881810599040001_8488287549309556163_n.mp4?_nc_cat=104&ccb=1-3&_nc_sid=985c63&efg=eyJ2ZW5jb2RlX3RhZyI6Im9lcF9oZCJ9&_nc_ohc=eYx95ULFfUkAX-ktiB1&_nc_ht=scontent-xsp1-2.xx&oh=cf5e7ec834b0a44c374acd60df2b01af&oe=60C8259A&dl=1" frameborder="0"></iframe> -->
+    <div class="container">
+        <div id="watchFilm">
+            <!-- Film loaded -->
+            <!-- <video controls>
+                <source src="https://scontent-sin6-1.xx.fbcdn.net/v/t66.36240-6/10000000_817372895869162_6286817166190607370_n.mp4?_nc_cat=111&ccb=1-3&_nc_sid=985c63&efg=eyJ2ZW5jb2RlX3RhZyI6Im9lcF9oZCJ9&_nc_ohc=bjBM-u5wYGQAX8bgyp2&_nc_ht=scontent-sin6-1.xx&oh=1c85342bdb8b6aec5d2ac69e0c80178a&oe=60BEEC16&dl=1" type="video/mp4">
+            </video> -->
+        </div>
+        <div class="filmHot">
+            <div class="titleFilmHot">PHIM LẺ HOT TRONG TUẦN</div>
+            <div id="listFilmHot">
+            
+            </div>
+        </div>
+        <!-- Load Facebook SDK for JavaScript -->
+        <!-- <div id="fb-root"></div>
+        <script async defer crossorigin="anonymous" src="https://connect.facebook.net/vi_VN/sdk.js#xfbml=1&version=v10.0" nonce="XyR1ryVF"></script> -->
+
+        <!-- Your embedded comments code -->
+        <!-- <div class="fb-comments" data-href="https://www.facebook.com/rimonshop/posts/3957824487588747" data-width="800" data-numposts="5"></div> -->
+    </div>
+    
+    <footer class="container footer">
+        <div class="column-footer">
+            <a href="">Liên hệ</a>
+            <a href="">Giới thiệu</a>
+            <a href="">Bản Quyền</a>
+        </div>
+        <div class="column-footer">
+            <a href="">Liên hệ</a>
+            <a href="">Giới thiệu</a>
+            <a href="">Bản Quyền</a>
+        </div>
+        <div class="column-footer">
+            <a href="">Liên hệ</a>
+            <a href="">Giới thiệu</a>
+            <a href="">Bản Quyền</a>
+        </div>
+        <div class="copyright">
+            <div>Copyright © 2021 Fullphim.net. All Rights reserved.</div>
+        </div>  
+    </footer>
+    <script>
+        const params = (new URL(location)).searchParams;
+        var theLoai = params.get("the-loai") || "phimle";
+        var films = fetch(`./${theLoai}.json`)
+                        .then(results => results.json())
+            
+        document.addEventListener("DOMContentLoaded", function(event) {
+            createActiveLi();
+            films.then(films => {
+                const film = films.find( ({ url }) => url.includes(params.get("urlFilm")));
+                createFilmHot(films);
+                createdContentFilm(film);
+                try{
+                    var div = document.createElement("div")
+                    div.classList.add("iframe-container")
+                    if(film.episode[0].type == "video"){
+                        var source = document.querySelector("video source");
+                        var video = document.querySelector("video");
+                        
+                        div.innerHTML = '<video controls class="iframe" ><source src="'+film.episode[0].url+'" type="video/mp4"></video>';
+                    }else{
+                        var iframe = document.createElement("iframe");
+                        iframe.src = film.episode[0].url
+                        iframe.classList.add("iframe");
+                        iframe.setAttribute("allowfullscreen", "true");
+                        iframe.setAttribute("allow", "autoplay");
+                        iframe.setAttribute("frameborder", "0");
+                        div.appendChild(iframe);
+                    }
+
+                    document.getElementById("watchFilm").appendChild(div)
+                } catch(err) {
+                    console.log(err)
+                }
+                // console.log(iframe)
+                if(film.episode.length > 1 || film.episode[0].episode){
+                    createEpisode(film);
+                }
+            })
+        });
+        
+        function createActiveLi() {
+            var liActive = [...document.querySelectorAll("li")].find((li) =>li.querySelector("a").href.includes(theLoai));
+            liActive.classList.add("active");
+        }
+
+        function createEpisode(film) {
+            var episodes = document.createElement("div"); 
+            for(let i = 0; i < film.episode.length; i++){
+                var episode = document.createElement("button");
+                episode.innerHTML = film.episode[i].episode;
+                episode.classList.add("episode");
+                episode.onclick = function() {
+                    if(film.episode[0].type == "video"){
+                        var iframe = document.getElementsByTagName("source");
+                        var video = document.querySelector("video");
+                        iframe[0].src = film.episode[i].url;
+                        video.load();
+                    }else{
+                        var iframe = document.getElementsByTagName("iframe");
+                        iframe[0].src = film.episode[i].url;
+                    }
+                    createTitleFilm(film, film.episode[i].episode)
+                }
+                episodes.appendChild(episode);
+            }
+            document.getElementById("watchFilm").appendChild(episodes);   
+        }
+        
+        function createdContentFilm(film) {
+            var divImg = document.createElement("div")
+            var img = document.createElement("img")
+            img.src = film.imageUrl;
+            divImg.appendChild(img)
+            divImg.classList.add("imgContent")
+
+            var div = document.createElement("div");
+            var h1 = document.createElement("h1");
+            div.classList.add("contentTitle");
+            if(film.episode.length > 1 || film.episode[0].episode){
+                h1.innerHTML = film.title + ` - Tập ${film.episode[0].episode}`;
+            } else {
+                h1.innerHTML = film.title;
+            }
+            div.appendChild(h1)
+
+            document.getElementById("contentFilm").style['background'] = `url(${film.imageUrl}) center center`; 
+            document.getElementById("content").appendChild(divImg)
+            document.getElementById("content").appendChild(div)
+        }
+
+        function createTitleFilm(film, episode) {
+            document.getElementsByTagName("h1")[0].innerHTML = film.title + ` - Tập ${episode}`
+        }
+        function createFilmHot(films) {
+            for(let i = 0; i < 40; i++){
+                createContentFilmHot(films[i])
+            }
+        }
+        function createContentFilmHot(film) {
+            var div = document.createElement("div");
+            div.classList.add("itemFilm");
+
+            var aImg = document.createElement("a");
+            aImg.classList.add("imgFilmHot");
+            aImg.style['background-image'] = `url(${film.imageUrl})`;
+            aImg.href = `/film.html?urlFilm=${film.url}`;
+
+            var aTitle = document.createElement("a");
+            aTitle.classList.add("titleFilmIn");
+            aTitle.innerHTML = film.title;
+            aTitle.href = `/film.html?the-loai=${theLoai}&urlFilm=${film.url}`;
+
+            div.appendChild(aImg);
+            div.appendChild(aTitle);
+            
+            document.getElementById("listFilmHot").appendChild(div);
+        }
+        function sidebar() {
+            document.querySelector("nav ul").style.display = "block";
+            document.querySelector(".close").style['visibility'] = "visible";
+        }
+        function sidebarClose() {
+            document.querySelector("nav ul").style.display = "none";
+            document.querySelector(".close").style['visibility'] = "hidden";
+        }
+        window.onresize = function() {
+            if(window.innerWidth > 780){
+                document.querySelector("nav ul").style.display = "flex";
+                document.querySelector(".close").style['visibility'] = "hidden";
+            }else{
+                if(document.querySelector(".close").style['visibility'].includes("visible")){
+                    document.querySelector("nav ul").style.display = "block";
+                }else{
+                    document.querySelector("nav ul").style.display = "none";
+                    document.querySelector(".close").style['visibility'] = "hidden";
+                }
+            }
+        }
+    </script>
+</body>
+</html>
