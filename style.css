@@ -456,6 +456,8 @@ a{
     .imgContent{
         /* display: flex;
         justify-content: center; */
+        margin-top: 20vh;
+        height: fit-content;
         width: 50%;
     }
     .footer{
